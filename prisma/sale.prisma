@@ -1,0 +1,20 @@
+type SaleItem {
+  productId String @db.ObjectId
+  quantity  Int
+  price     Float
+}
+
+model Sale {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  items      SaleItem[]
+  grandTotal Float
+  saleDate   DateTime   @default(now())
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sales")
+}
