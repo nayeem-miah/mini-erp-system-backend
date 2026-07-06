@@ -1,7 +1,8 @@
 import ApiError from "../../errors/apiError";
 import { prisma } from "../../prisma/prisma";
+import { ICreateCategoryPayload, IUpdateCategoryPayload } from "./category.interface";
 
-const createCategory = async (payload: { name: string }) => {
+const createCategory = async (payload: ICreateCategoryPayload) => {
   const isExist = await prisma.category.findUnique({
     where: {
       name: payload.name,
@@ -29,7 +30,7 @@ const getAllCategories = async () => {
   return result;
 };
 
-const updateCategory = async (id: string, payload: { name: string }) => {
+const updateCategory = async (id: string, payload: IUpdateCategoryPayload) => {
   const isExist = await prisma.category.findUnique({
     where: { id },
   });
@@ -38,7 +39,6 @@ const updateCategory = async (id: string, payload: { name: string }) => {
     throw new ApiError(404, "Category not found");
   }
 
-  // Check if name is already taken by another category
   const isNameExist = await prisma.category.findUnique({
     where: {
       name: payload.name,
@@ -66,7 +66,6 @@ const deleteCategory = async (id: string) => {
     throw new ApiError(404, "Category not found");
   }
 
-  // Check if category has associated products
   const productCount = await prisma.product.count({
     where: {
       categoryId: id,
