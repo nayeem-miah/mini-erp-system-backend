@@ -2,6 +2,8 @@
 
 A fully scalable, production-ready modular backend built with **Node.js**, **Express**, **TypeScript**, and **Prisma ORM** with **MongoDB**.
 
+**Live API URL:** [https://mini-erp-system-backend.vercel.app/](https://mini-erp-system-backend.vercel.app/)
+
 ---
 
 ## 🛠️ Technology Stack
@@ -110,6 +112,17 @@ npm run dev
 | :--- | :--- | :--- | :--- |
 | `/auth/login` | `POST` | Public | Log in and receive JWT token |
 
+### 👤 Users Module
+| Endpoint | Method | Role Allowed | Description |
+| :--- | :--- | :--- | :--- |
+| `/users` | `POST` | Public | Register a new user |
+| `/users/me` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Get logged-in user profile |
+| `/users/update-profile` | `PATCH` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Update profile information |
+| `/users` | `GET` | `ADMIN` | List all users in system |
+| `/users/:id` | `GET` | `ADMIN` | Find a single user by ID |
+| `/users/:id` | `DELETE` | `ADMIN` | Delete user by ID |
+| `/users/role/:id` | `PATCH` | `ADMIN` | Change a user's role |
+
 ### 📂 Categories Module
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
@@ -131,7 +144,7 @@ npm run dev
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
 | `/sales` | `POST` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Create sale order (decrements stock) |
-| `/sales` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | View all sales history |
+| `/sales` | `GET` | `ADMIN`, `MANAGER` | View all sales history |
 | `/sales/my-sales` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | View logged-in user sales |
 | `/sales/:id` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Get single sale details by ID |
 
@@ -142,6 +155,7 @@ npm run dev
 
 ---
 
-## 🧪 Postman Collection
-An optimized Postman collection has been prepared with environment variables and automated token-passing scripts:
-- **File Name:** `backend-api.postman_collection.json` (Import directly into Postman)
+## 📡 API Documentation & Postman Collection
+- **Live API Documentation (Fern):** [https://md-nayeem-miah.docs.buildwithfern.com/mini-erp-system-api](https://md-nayeem-miah.docs.buildwithfern.com/mini-erp-system-api)
+- **Postman Collection File:** `backend-api.postman_collection.json` (Import directly into Postman. Contains pre-configured endpoints and token scripts)
+
