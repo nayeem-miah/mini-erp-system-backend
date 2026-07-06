@@ -66,6 +66,15 @@ const deleteCategory = async (id: string) => {
     throw new ApiError(404, "Category not found");
   }
 
+  const productCount = await prisma.product.count({
+    where: {
+      categoryId: id,
+    },
+  });
+
+  if (productCount > 0) {
+    throw new ApiError(400, "Cannot delete category because it is used by one or more products.");
+  }
 
   const result = await prisma.category.delete({
     where: { id },
