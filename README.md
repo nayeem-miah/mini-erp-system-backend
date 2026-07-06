@@ -1,10 +1,6 @@
-# 🚀 Smart Project & Task Collaboration System (SPTC-System) - Backend
+# 🚀 Mini ERP – Inventory & Sales Management System (Backend)
 
 A fully scalable, production-ready modular backend built with **Node.js**, **Express**, **TypeScript**, and **Prisma ORM** with **MongoDB**.
-
-## 🌐 Live URL
-- **Production API URL:** [https://sptc-system-backend.vercel.app](https://sptc-system-backend.vercel.app)
-- **Base Endpoint:** `https://sptc-system-backend.vercel.app/api/v1`
 
 ---
 
@@ -13,30 +9,27 @@ A fully scalable, production-ready modular backend built with **Node.js**, **Exp
 - **Language:** TypeScript
 - **Database & ORM:** MongoDB Atlas + Prisma ORM
 - **Authentication:** JSON Web Tokens (JWT) + BcryptJS
-- **Hosting Platform:** Vercel
+- **Hosting Platform:** Vercel (Ready configuration)
+- **Image Cloud Storage:** Cloudinary (via memory-buffered streams)
 
 ---
 
-## ✨ Features
-1. **Authentication & RBAC:**
-   - Email & Password Signup & Login.
+## ✨ Core Features
+1. **Authentication & RBAC (Role-Based Access Control):**
+   - Email & Password Login.
    - Secure token handling via HTTP headers (`Bearer {{token}}`).
-   - Role-Based Access Control: `ADMIN`, `PROJECT_MANAGER`, and `TEAM_MEMBER`.
-2. **Project Management:**
-   - Create, retrieve, update, and delete projects.
-   - Project memberships: Only members assigned to a project can collaborate on its tasks.
-   - Cascade delete: Deleting a project automatically deletes all related tasks.
-3. **Task Management (With Strict Validations):**
-   - No duplicate task titles allowed within the same project.
-   - Due dates cannot be set to a past date.
-   - Tasks can only be assigned to users who are members of the corresponding project.
-   - Completed tasks cannot be re-assigned.
-   - **Role restrictions:** Team members can only update the `status` of tasks assigned to them, while Admins & Project Managers have full edit access.
-4. **Activity Logs:**
-   - Automatically records audit trails for project modifications, task creation, and member assignments.
-5. **Dashboard Insights:**
-   - Aggregated KPIs for total, pending, and completed projects/tasks.
-   - Real-time work progress overview and member workload distribution.
+   - Standard roles: `ADMIN`, `MANAGER`, and `EMPLOYEE`.
+2. **Dynamic Categories Module:**
+   - Add, retrieve, edit, and delete dynamic categories.
+   - Restrict deletions of categories containing associated products to prevent database constraints violations.
+3. **Products Module:**
+   - **Auto-Generated SKU:** Meaningful and sequential SKUs are automatically computed on the backend using the pattern: `[CAT_PREFIX]-[PROD_PREFIX]-[SEQUENCE]` (e.g. `ELC-LAP-0001`).
+   - **Memory Storage Image Upload:** Multipart image uploads stream directly to Cloudinary from RAM buffers without writing files to local disk, optimizing performance and server health.
+   - Search by name/SKU, pagination, sorting, and category filters.
+4. **Transactional Sales Module:**
+   - Atomic database transactions (`prisma.$transaction`) check stock levels, update product stocks, calculate grand totals, and store sale transaction history safely.
+5. **Dashboard Insights Module:**
+   - Returns counts for total products, low stock products (`stock < 5`), total sales count, and total sales revenue.
 
 ---
 
@@ -47,17 +40,21 @@ src/
 ├── app/
 │   ├── config/             # Environment configurations
 │   ├── errors/             # Global error classes
-│   ├── middlewares/        # Authentication and error handling middlewares
-│   ├── modules/            # Domain-driven modules (auth, project, task, activityLog, user, dashboard)
-│   │   ├── auth/           # Route, Controller, Service, Validation
-│   │   ├── project/
-│   │   ├── task/
-│   │   ├── activityLog/
+│   ├── middlewares/        # Authentication, request validation, and error handlers
+│   ├── modules/            # Domain-driven modules (auth, user, category, product, sale, dashboard)
+│   │   ├── auth/           # Routes, controllers, services, interfaces
+│   │   ├── category/
+│   │   ├── product/
+│   │   ├── sale/
 │   │   └── dashboard/
 │   └── routes/             # Centralized routing registry
 ├── prisma/
-│   ├── schema.prisma       # Database schemas
-│   └── enum.prisma         # Centralized Prisma database enums
+│   ├── schema.prisma       # Database core setups
+│   ├── enum.prisma         # Database enums
+│   ├── user.prisma         # User schema
+│   ├── category.prisma     # Dynamic categories schema
+│   ├── product.prisma      # Products schema
+│   └── sale.prisma         # Sales and SaleItems schema
 ├── app.ts                  # Express application setup
 └── server.ts               # Server bootstrapping and DB seeding
 ```
@@ -66,10 +63,8 @@ src/
 
 ## 🚀 How to Run Locally
 
-### 1. Clone & Install Dependencies
+### 1. Install Dependencies
 ```bash
-git clone https://github.com/nayeem-miah/sptc-system-backend.git
-cd sptc-system-backend
 npm install
 ```
 
@@ -86,15 +81,20 @@ JWT_REFRESH_SECRET="your-jwt-refresh-token-secret"
 JWT_ACCESS_EXPIRES_IN=5d
 JWT_REFRESH_EXPIRES_IN=30d
 
+# Cloudinary Setup
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+CLOUDINARY_API_KEY="your-cloudinary-api-key"
+CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
+
 # Password Hashing
 SALT_ROUNDS=12
 ```
 
 ### 3. Generate Database Client & Seed DB
-Run the Prisma generate command and start the server. The server automatically seeds initial accounts for testing:
+Generate the Prisma Client and start the development server. The server will automatically seed initial accounts for testing:
 - **Admin:** `admin@gmail.com` (Password: `123456`)
-- **Project Manager:** `pm@gmail.com` (Password: `123456`)
-- **Team Member:** `member@gmail.com` (Password: `123456`)
+- **Manager:** `manager@gmail.com` (Password: `123456`)
+- **Employee:** `employee@gmail.com` (Password: `123456`)
 
 ```bash
 npx prisma generate
@@ -108,35 +108,40 @@ npm run dev
 ### 🔐 Authentication Module
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
-| `/auth/register` | `POST` | Public | Register a new user |
 | `/auth/login` | `POST` | Public | Log in and receive JWT token |
 
-### 📁 Project Module
+### 📂 Categories Module
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
-| `/projects` | `POST` | `ADMIN`, `PROJECT_MANAGER` | Create a new project |
-| `/projects` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get projects list (with filter/search) |
-| `/projects/:id` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get single project by ID |
-| `/projects/:id` | `PATCH` | `ADMIN`, `PROJECT_MANAGER` | Update project details |
-| `/projects/:id` | `DELETE` | `ADMIN`, `PROJECT_MANAGER` | Delete project (cascades tasks) |
+| `/categories` | `POST` | `ADMIN`, `MANAGER` | Create dynamic category |
+| `/categories` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | List all categories |
+| `/categories/:id` | `PATCH` | `ADMIN`, `MANAGER` | Update category details |
+| `/categories/:id` | `DELETE` | `ADMIN`, `MANAGER` | Delete category |
 
-### 📝 Task Module
+### 📦 Products Module
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
-| `/tasks` | `POST` | `ADMIN`, `PROJECT_MANAGER` | Create and assign a task |
-| `/tasks` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get all tasks (with filters & search) |
-| `/tasks/:id` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get single task details |
-| `/tasks/:id` | `PATCH` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Update task details (Team member can update status only) |
-| `/tasks/:id` | `DELETE` | `ADMIN`, `PROJECT_MANAGER` | Delete task |
+| `/products` | `POST` | `ADMIN`, `MANAGER` | Create product (Multipart Image required) |
+| `/products` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | List products (Search, Paginate, Filter) |
+| `/products/:id` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Get product details by ID |
+| `/products/:id` | `PATCH` | `ADMIN`, `MANAGER` | Update product details (Multipart) |
+| `/products/:id` | `DELETE` | `ADMIN`, `MANAGER` | Delete product |
 
-### 📊 Dashboard & Activity Modules
+### 🛒 Sales Module
 | Endpoint | Method | Role Allowed | Description |
 | :--- | :--- | :--- | :--- |
-| `/dashboard/insights` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get analytics KPIs and workload distribution |
-| `/activities` | `GET` | `ADMIN`, `PROJECT_MANAGER`, `TEAM_MEMBER` | Get recent audit trail logs |
+| `/sales` | `POST` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Create sale order (decrements stock) |
+| `/sales` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | View all sales history |
+| `/sales/my-sales` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | View logged-in user sales |
+| `/sales/:id` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Get single sale details by ID |
+
+### 📊 Dashboard Module
+| Endpoint | Method | Role Allowed | Description |
+| :--- | :--- | :--- | :--- |
+| `/dashboard/insights` | `GET` | `ADMIN`, `MANAGER`, `EMPLOYEE` | Get ERP statistics & Low Stock alert list |
 
 ---
 
 ## 🧪 Postman Collection
-The API collection containing predefined environment variables and requests for testing all flows is stored at:
-- **File Path:** [backend-api.postman_collection.json](backend-api.postman_collection.json)
+An optimized Postman collection has been prepared with environment variables and automated token-passing scripts:
+- **File Name:** `backend-api.postman_collection.json` (Import directly into Postman)
