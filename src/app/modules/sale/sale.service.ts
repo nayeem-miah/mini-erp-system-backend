@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ApiError from "../../errors/apiError";
 import { prisma } from "../../prisma/prisma";
 import { IPopulatedSale, ISaleWithUser } from "./sale.interface";
@@ -125,45 +126,227 @@ const createSale = async (
   });
 };
 
-const getAllSales = async (): Promise<IPopulatedSale[]> => {
-  const sales = await prisma.sale.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
+const getAllSales = async (query: {
+  page?: string;
+  limit?: string;
+  searchTerm?: string;
+  dateFilter?: string;
+}) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const { searchTerm, dateFilter } = query;
+  const andConditions: any[] = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        { id: { contains: searchTerm, mode: "insensitive" } },
+        {
+          user: {
+            OR: [
+              { name: { contains: searchTerm, mode: "insensitive" } },
+              { email: { contains: searchTerm, mode: "insensitive" } },
+            ],
+          },
+        },
+      ],
+    });
+  }
+
+  if (dateFilter && dateFilter !== "all") {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (dateFilter === "today") {
+      andConditions.push({
+        createdAt: {
+          gte: today,
+        },
+      });
+    } else if (dateFilter === "week") {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(today.getDate() - 7);
+      andConditions.push({
+        createdAt: {
+          gte: oneWeekAgo,
+        },
+      });
+    } else if (dateFilter === "month") {
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(today.getMonth() - 1);
+      andConditions.push({
+        createdAt: {
+          gte: oneMonthAgo,
+        },
+      });
+    }
+  }
+
+  const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const [sales, total] = await Promise.all([
+    prisma.sale.findMany({
+      where: whereConditions,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
         },
       },
+    }),
+    prisma.sale.count({
+      where: whereConditions,
+    }),
+  ]);
+
+  const allFilteredSales = await prisma.sale.findMany({
+    where: whereConditions,
+    select: {
+      grandTotal: true,
     },
   });
 
-  return await populateProductsForSales(sales);
+  const totalRevenue = allFilteredSales.reduce((acc, s) => acc + s.grandTotal, 0);
+  const totalTransactions = allFilteredSales.length;
+  const avgOrderValue = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+
+  const totalPages = Math.ceil(total / limit);
+  const populated = await populateProductsForSales(sales);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages,
+      totalRevenue,
+      avgOrderValue,
+    },
+    data: populated,
+  };
 };
 
-const getMySales = async (userId: string): Promise<IPopulatedSale[]> => {
-  const sales = await prisma.sale.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
+const getMySales = async (
+  userId: string,
+  query: {
+    page?: string;
+    limit?: string;
+    searchTerm?: string;
+    dateFilter?: string;
+  }
+) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const { searchTerm, dateFilter } = query;
+  const andConditions: any[] = [{ userId }];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        { id: { contains: searchTerm, mode: "insensitive" } },
+        {
+          user: {
+            OR: [
+              { name: { contains: searchTerm, mode: "insensitive" } },
+              { email: { contains: searchTerm, mode: "insensitive" } },
+            ],
+          },
+        },
+      ],
+    });
+  }
+
+  if (dateFilter && dateFilter !== "all") {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (dateFilter === "today") {
+      andConditions.push({
+        createdAt: {
+          gte: today,
+        },
+      });
+    } else if (dateFilter === "week") {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(today.getDate() - 7);
+      andConditions.push({
+        createdAt: {
+          gte: oneWeekAgo,
+        },
+      });
+    } else if (dateFilter === "month") {
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(today.getMonth() - 1);
+      andConditions.push({
+        createdAt: {
+          gte: oneMonthAgo,
+        },
+      });
+    }
+  }
+
+  const whereConditions = { AND: andConditions };
+
+  const [sales, total] = await Promise.all([
+    prisma.sale.findMany({
+      where: whereConditions,
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
         },
       },
+    }),
+    prisma.sale.count({
+      where: whereConditions,
+    }),
+  ]);
+
+  const allFilteredSales = await prisma.sale.findMany({
+    where: whereConditions,
+    select: {
+      grandTotal: true,
     },
   });
 
-  return await populateProductsForSales(sales);
+  const totalRevenue = allFilteredSales.reduce((acc, s) => acc + s.grandTotal, 0);
+  const totalTransactions = allFilteredSales.length;
+  const avgOrderValue = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+
+  const totalPages = Math.ceil(total / limit);
+  const populated = await populateProductsForSales(sales);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages,
+      totalRevenue,
+      avgOrderValue,
+    },
+    data: populated,
+  };
 };
 
 const getSaleById = async (id: string): Promise<IPopulatedSale> => {
