@@ -21,7 +21,7 @@ const createSale = catchAsync(async (req: IRequestWithUser, res: Response) => {
 });
 
 const getAllSales = catchAsync(async (req: Request, res: Response) => {
-  const result = await SaleService.getAllSales();
+  const result = await SaleService.getAllSales(req.query);
 
   sendResponse(res, {
     statusCode: 200,
@@ -33,7 +33,7 @@ const getAllSales = catchAsync(async (req: Request, res: Response) => {
 
 const getMySales = catchAsync(async (req: IRequestWithUser, res: Response) => {
   const decodedUser = req.user as IAuthUser;
-  const result = await SaleService.getMySales(decodedUser.userId);
+  const result = await SaleService.getMySales(decodedUser.userId, req.query);
 
   sendResponse(res, {
     statusCode: 200,
