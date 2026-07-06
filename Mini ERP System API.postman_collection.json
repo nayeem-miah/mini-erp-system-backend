@@ -1,0 +1,1429 @@
+{
+  "info": {
+    "_postman_id": "ca9bada4-968b-4e4c-be96-e56eaaffd2e3",
+    "name": "Mini ERP System API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46499415",
+    "_collection_link": "https://go.postman.co/collection/46499415-ca9bada4-968b-4e4c-be96-e56eaaffd2e3?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.success && response.data && response.data.accessToken) {",
+                  "    pm.environment.set(\"token\", response.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@gmail.com\",\n//   \"email\": \"employee@gmail.com\",\n//   \"email\": \"manager@gmail.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User / Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@gmail.com\",\n  \"password\": \"123456\",\n  \"role\": \"EMPLOYEE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"phone\": \"01712345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/update-profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "update-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change User Role (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"MANAGER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/role/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "role",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Category",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Electronics\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "215"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"d7-lmfKE5g2C+VywKqPR/DlyCCgKUY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 09:59:43 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"success\": true,\n    \"message\": \"Category created successfully\",\n    \"data\": {\n        \"id\": \"6a4b7c8f2217ba0dd35d00a0\",\n        \"name\": \"Electronics\",\n        \"createdAt\": \"2026-07-06T09:59:43.011Z\",\n        \"updatedAt\": \"2026-07-06T09:59:43.011Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "List Categories",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "221"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"dd-mSHa0cB3vPcVDVjA9mL537ay/gc\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:02:28 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Categories retrieved successfully\",\n    \"data\": [\n        {\n            \"id\": \"6a4b7c8f2217ba0dd35d00a0\",\n            \"name\": \"Electronics\",\n            \"createdAt\": \"2026-07-06T09:59:43.011Z\",\n            \"updatedAt\": \"2026-07-06T09:59:43.011Z\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptops & Accessories\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Update Category",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Laptops & Accessories\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/categories/{{category_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories",
+                    "{{category_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "225"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"e1-5PeqEpR/sPNe3AcVTdLZx8PJIDM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:02:40 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Category updated successfully\",\n    \"data\": {\n        \"id\": \"6a4b7c8f2217ba0dd35d00a0\",\n        \"name\": \"Laptops & Accessories\",\n        \"createdAt\": \"2026-07-06T09:59:43.011Z\",\n        \"updatedAt\": \"2026-07-06T10:02:40.046Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Delete Category",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/categories/{{category_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "categories",
+                    "{{category_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "225"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"e1-2U8UJXHW7oG0kuIq0V+Yg4zNzMI\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:02:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Category deleted successfully\",\n    \"data\": {\n        \"id\": \"6a4b7c8f2217ba0dd35d00a0\",\n        \"name\": \"Laptops & Accessories\",\n        \"createdAt\": \"2026-07-06T09:59:43.011Z\",\n        \"updatedAt\": \"2026-07-06T10:02:40.046Z\"\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "MacBook Pro M3",
+                  "type": "text"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{category_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "purchasePrice",
+                  "value": "1500",
+                  "type": "text"
+                },
+                {
+                  "key": "sellingPrice",
+                  "value": "1999",
+                  "type": "text"
+                },
+                {
+                  "key": "stockQuantity",
+                  "value": "15",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/C:/Users/Md nayeem/Downloads/photo-1496181133206-80ce9b88a853.avif"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Product",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "MacBook Pro M3",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "{{category_id}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "purchasePrice",
+                      "value": "1500",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sellingPrice",
+                      "value": "1999",
+                      "type": "text"
+                    },
+                    {
+                      "key": "stockQuantity",
+                      "value": "15",
+                      "type": "text"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "src": "/C:/Users/Md nayeem/Downloads/photo-1496181133206-80ce9b88a853.avif"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "products"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "598"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"256-OYVDfK9FuVdigc5AIBZgfb8aHZg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:07:03 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"success\": true,\n    \"message\": \"Product created successfully\",\n    \"data\": {\n        \"id\": \"6a4b7e466cbda16dfa6f2863\",\n        \"name\": \"MacBook Pro M3\",\n        \"sku\": \"ELE-MAC-0001\",\n        \"purchasePrice\": 1500,\n        \"sellingPrice\": 1999,\n        \"stockQuantity\": 15,\n        \"image\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332414/mini-erp-products/dhuc9dce3ms66d6mt5ko.avif\",\n        \"createdAt\": \"2026-07-06T10:07:02.554Z\",\n        \"updatedAt\": \"2026-07-06T10:07:02.554Z\",\n        \"categoryId\": \"6a4b7d4c2217ba0dd35d00a1\",\n        \"category\": {\n            \"id\": \"6a4b7d4c2217ba0dd35d00a1\",\n            \"name\": \"Electronics\",\n            \"createdAt\": \"2026-07-06T10:02:52.103Z\",\n            \"updatedAt\": \"2026-07-06T10:02:52.103Z\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Products (Paginated & Search)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "MacBook",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{category_id}}",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "List Products (Paginated & Search)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/products",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "searchTerm",
+                      "value": "MacBook",
+                      "disabled": true
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "{{category_id}}",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "666"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"29a-7geiwniPG68rdGJ7QA9kt1BP6jk\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:07:44 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Products retrieved successfully\",\n    \"data\": {\n        \"meta\": {\n            \"page\": 1,\n            \"limit\": 10,\n            \"total\": 1,\n            \"totalPages\": 1\n        },\n        \"data\": [\n            {\n                \"id\": \"6a4b7e466cbda16dfa6f2863\",\n                \"name\": \"MacBook Pro M3\",\n                \"sku\": \"ELE-MAC-0001\",\n                \"purchasePrice\": 1500,\n                \"sellingPrice\": 1999,\n                \"stockQuantity\": 15,\n                \"image\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332414/mini-erp-products/dhuc9dce3ms66d6mt5ko.avif\",\n                \"createdAt\": \"2026-07-06T10:07:02.554Z\",\n                \"updatedAt\": \"2026-07-06T10:07:02.554Z\",\n                \"categoryId\": \"6a4b7d4c2217ba0dd35d00a1\",\n                \"category\": {\n                    \"id\": \"6a4b7d4c2217ba0dd35d00a1\",\n                    \"name\": \"Electronics\",\n                    \"createdAt\": \"2026-07-06T10:02:52.103Z\",\n                    \"updatedAt\": \"2026-07-06T10:02:52.103Z\"\n                }\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "MacBook Pro M3 Max",
+                  "type": "text"
+                },
+                {
+                  "key": "sellingPrice",
+                  "value": "2499",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "value": null,
+                  "disabled": true
+                },
+                {
+                  "key": "stockQuantity",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "cebfccdf-45d3-40f3-b7f3-8ffe2fa22b28"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Update Product",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "MacBook Pro M3 Max",
+                      "type": "text"
+                    },
+                    {
+                      "key": "sellingPrice",
+                      "value": "2499",
+                      "type": "text"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "value": null,
+                      "disabled": true
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/products/{{product_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "products",
+                    "{{product_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "602"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"25a-XXbRJFruX/wsYpZ4ZKE+XtEVFJ4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:08:29 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Product updated successfully\",\n    \"data\": {\n        \"id\": \"6a4b7e466cbda16dfa6f2863\",\n        \"name\": \"MacBook Pro M3 Max\",\n        \"sku\": \"ELE-MAC-0001\",\n        \"purchasePrice\": 1500,\n        \"sellingPrice\": 2499,\n        \"stockQuantity\": 15,\n        \"image\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332414/mini-erp-products/dhuc9dce3ms66d6mt5ko.avif\",\n        \"createdAt\": \"2026-07-06T10:07:02.554Z\",\n        \"updatedAt\": \"2026-07-06T10:08:28.988Z\",\n        \"categoryId\": \"6a4b7d4c2217ba0dd35d00a1\",\n        \"category\": {\n            \"id\": \"6a4b7d4c2217ba0dd35d00a1\",\n            \"name\": \"Electronics\",\n            \"createdAt\": \"2026-07-06T10:02:52.103Z\",\n            \"updatedAt\": \"2026-07-06T10:02:52.103Z\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sales",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sales"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Sale",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/sales",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sales"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "449"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1c1-h4zJfHu0fxrr8v0EVsT0rP9gwRQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:14:21 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 201,\n    \"success\": true,\n    \"message\": \"Sale processed successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"productId\": \"6a4b7eb26cbda16dfa6f2864\",\n                \"quantity\": 2,\n                \"price\": 2499\n            }\n        ],\n        \"id\": \"6a4b7ffd6cbda16dfa6f2865\",\n        \"grandTotal\": 4998,\n        \"saleDate\": \"2026-07-06T10:14:21.523Z\",\n        \"userId\": \"6a4b28e5d8e160cd715e4d34\",\n        \"createdAt\": \"2026-07-06T10:14:21.523Z\",\n        \"updatedAt\": \"2026-07-06T10:14:21.523Z\",\n        \"user\": {\n            \"id\": \"6a4b28e5d8e160cd715e4d34\",\n            \"name\": \"Employee\",\n            \"email\": \"employee@gmail.com\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List All Sales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sales",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sales"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "List All Sales",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/sales",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sales"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "646"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"286-lrmpD9mqoXRRU6dbRXPt6eiKef8\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:14:30 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Sales history retrieved successfully\",\n    \"data\": [\n        {\n            \"items\": [\n                {\n                    \"productId\": \"6a4b7eb26cbda16dfa6f2864\",\n                    \"quantity\": 2,\n                    \"price\": 2499,\n                    \"productName\": \"MacBook Pro M3 Max\",\n                    \"productSku\": \"ELE-MAC-0001\",\n                    \"productImage\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332522/mini-erp-products/quyt9sulu048avwmja5c.avif\"\n                }\n            ],\n            \"id\": \"6a4b7ffd6cbda16dfa6f2865\",\n            \"grandTotal\": 4998,\n            \"saleDate\": \"2026-07-06T10:14:21.523Z\",\n            \"userId\": \"6a4b28e5d8e160cd715e4d34\",\n            \"createdAt\": \"2026-07-06T10:14:21.523Z\",\n            \"updatedAt\": \"2026-07-06T10:14:21.523Z\",\n            \"user\": {\n                \"id\": \"6a4b28e5d8e160cd715e4d34\",\n                \"name\": \"Employee\",\n                \"email\": \"employee@gmail.com\"\n            }\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "List My Sales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sales/my-sales",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sales",
+                "my-sales"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sale By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/sales/{{sale_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sales",
+                "{{sale_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Sale By ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/sales/{{sale_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sales",
+                    "{{sale_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "642"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"282-+E+giCEbvOwThAea0T0dS+97O5Y\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:18:18 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Sale record retrieved successfully\",\n    \"data\": {\n        \"items\": [\n            {\n                \"productId\": \"6a4b7eb26cbda16dfa6f2864\",\n                \"quantity\": 2,\n                \"price\": 2499,\n                \"productName\": \"MacBook Pro M3 Max\",\n                \"productSku\": \"ELE-MAC-0001\",\n                \"productImage\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332522/mini-erp-products/quyt9sulu048avwmja5c.avif\"\n            }\n        ],\n        \"id\": \"6a4b7ffd6cbda16dfa6f2865\",\n        \"grandTotal\": 4998,\n        \"saleDate\": \"2026-07-06T10:14:21.523Z\",\n        \"userId\": \"6a4b28e5d8e160cd715e4d34\",\n        \"createdAt\": \"2026-07-06T10:14:21.523Z\",\n        \"updatedAt\": \"2026-07-06T10:14:21.523Z\",\n        \"user\": {\n            \"id\": \"6a4b28e5d8e160cd715e4d34\",\n            \"name\": \"Employee\",\n            \"email\": \"employee@gmail.com\"\n        }\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Insights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/dashboard/insights",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "insights"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Insights",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/dashboard/insights",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "insights"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "Access-Control-Allow-Credentials",
+                  "value": "true"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "723"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2d3-PrifzpUftBEIsqAuRkPe+ZgFzXE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 06 Jul 2026 10:10:51 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"statusCode\": 200,\n    \"success\": true,\n    \"message\": \"Dashboard insights retrieved successfully\",\n    \"data\": {\n        \"totalProducts\": 1,\n        \"totalSalesCount\": 0,\n        \"totalSalesRevenue\": 0,\n        \"lowStockProducts\": [\n            {\n                \"id\": \"6a4b7eb26cbda16dfa6f2864\",\n                \"name\": \"MacBook Pro M3 Max\",\n                \"sku\": \"ELE-MAC-0001\",\n                \"purchasePrice\": 1500,\n                \"sellingPrice\": 2499,\n                \"stockQuantity\": 4,\n                \"image\": \"https://res.cloudinary.com/dgk8lgdzb/image/upload/v1783332522/mini-erp-products/quyt9sulu048avwmja5c.avif\",\n                \"createdAt\": \"2026-07-06T10:08:50.241Z\",\n                \"updatedAt\": \"2026-07-06T10:10:47.236Z\",\n                \"categoryId\": \"6a4b7d4c2217ba0dd35d00a1\",\n                \"category\": {\n                    \"id\": \"6a4b7d4c2217ba0dd35d00a1\",\n                    \"name\": \"Electronics\",\n                    \"createdAt\": \"2026-07-06T10:02:52.103Z\",\n                    \"updatedAt\": \"2026-07-06T10:02:52.103Z\"\n                }\n            }\n        ],\n        \"lowStockProductsCount\": 1\n    }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8321/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_id",
+      "value": "6689d06f1234567890abcdef",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "6689d1ef1234567890abcdef",
+      "type": "string"
+    },
+    {
+      "key": "sale_id",
+      "value": "6689d2ff1234567890abcdef",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "6689d3ff1234567890abcdef",
+      "type": "string"
+    }
+  ]
+}
