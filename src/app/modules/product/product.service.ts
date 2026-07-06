@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import ApiError from "../../errors/apiError";
 import { prisma } from "../../prisma/prisma";
+import { ICreateProductPayload, IProductQuery, IUpdateProductPayload } from "./product.interface";
 
 const generateSKU = async (productName: string, categoryId: string): Promise<string> => {
   const category = await prisma.category.findUnique({
@@ -41,14 +42,7 @@ const generateSKU = async (productName: string, categoryId: string): Promise<str
   return sku;
 };
 
-const createProduct = async (payload: {
-  name: string;
-  categoryId: string;
-  purchasePrice: number;
-  sellingPrice: number;
-  stockQuantity: number;
-  image: string;
-}) => {
+const createProduct = async (payload: ICreateProductPayload) => {
   const sku = await generateSKU(payload.name, payload.categoryId);
 
   const result = await prisma.product.create({
@@ -64,14 +58,7 @@ const createProduct = async (payload: {
   return result;
 };
 
-const getAllProducts = async (query: {
-  page?: string;
-  limit?: string;
-  searchTerm?: string;
-  categoryId?: string;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}) => {
+const getAllProducts = async (query: IProductQuery) => {
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -79,7 +66,6 @@ const getAllProducts = async (query: {
   const { searchTerm, categoryId, sortBy, sortOrder } = query;
 
   const andConditions: Prisma.ProductWhereInput[] = [];
-
 
   if (searchTerm) {
     andConditions.push({
@@ -90,14 +76,12 @@ const getAllProducts = async (query: {
     });
   }
 
-
   if (categoryId) {
     andConditions.push({ categoryId });
   }
 
   const whereConditions: Prisma.ProductWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
-
 
   const sortConditions: Prisma.ProductOrderByWithRelationInput = {};
   if (sortBy && sortOrder) {
@@ -151,14 +135,7 @@ const getProductById = async (id: string) => {
 
 const updateProduct = async (
   id: string,
-  payload: Partial<{
-    name: string;
-    categoryId: string;
-    purchasePrice: number;
-    sellingPrice: number;
-    stockQuantity: number;
-    image: string;
-  }>
+  payload: IUpdateProductPayload
 ) => {
   const isExist = await prisma.product.findUnique({
     where: { id },
