@@ -9,19 +9,19 @@ const router = express.Router();
 
 router.get(
   "/",
-  auth(UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE),
+  auth(UserRole.ADMIN),
   SaleController.getAllSales
 );
 
 router.get(
   "/my-sales",
-  auth(UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE),
+  auth(UserRole.ADMIN),
   SaleController.getMySales
 );
 
 router.get(
   "/:id",
-  auth(UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE),
+  auth(UserRole.ADMIN),
   SaleController.getSaleById
 );
 

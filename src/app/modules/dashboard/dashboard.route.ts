@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get(
   "/insights",
-  auth(UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE),
+  auth(UserRole.ADMIN),
   DashboardController.getDashboardInsights
 );
 

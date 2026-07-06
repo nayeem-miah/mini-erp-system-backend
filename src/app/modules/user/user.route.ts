@@ -25,10 +25,10 @@ router.patch(
 router.get("/me", auth(UserRole.EMPLOYEE, UserRole.MANAGER, UserRole.ADMIN), UserController.getSingleUser);
 
 // FIND USER BY ID (protected)
-router.get("/:id", auth(UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.MANAGER), UserController.getFindUserById);
+router.get("/:id", auth(UserRole.ADMIN), UserController.getFindUserById);
 
 // GET ALL USERS (protected)
-router.get("/", auth(UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.MANAGER), UserController.getAllUsers);
+router.get("/", auth(UserRole.ADMIN), UserController.getAllUsers);
 
 // DELETE USER BY ID (protected)
 router.delete("/:id", auth(UserRole.ADMIN), UserController.deleteUser);
